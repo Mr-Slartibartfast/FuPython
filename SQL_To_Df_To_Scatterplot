@@ -1,0 +1,23 @@
+import pandas as pd
+import pyodbc
+import matplotlib.pyplot as plt
+
+conn = pyodbc.connect(
+    "DRIVER={SQL Server};"
+    "SERVER=localhost;"
+    "DATABASE=TrackDB;"
+    "Trusted_Connection=yes;"
+)
+
+query = "SELECT Time, MeetDate FROM Results"
+df = pd.read_sql(query, conn)
+
+# Convert date
+df['MeetDate'] = pd.to_datetime(df['MeetDate'])
+
+# Plot
+plt.scatter(df['MeetDate'], df['Time'])
+plt.xlabel("Date")
+plt.ylabel("Time")
+plt.title("Performance Over Time")
+plt.show()
