@@ -1,0 +1,36 @@
+import pandas as pd
+import pyodbc
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
+
+# File picker
+Tk().withdraw()
+file_path = askopenfilename(title="Select CSV file")
+
+# Load CSV
+df = pd.read_csv(file_path)
+
+# Basic cleanup
+df = df.dropna()  # remove nulls
+df.columns = df.columns.str.strip()
+
+# SQL connection
+conn = pyodbc.connect(
+    "DRIVER={SQL Server};"
+    "SERVER=localhost;"
+    "DATABASE=TrackDB;"
+    "Trusted_Connection=yes;"
+)
+cursor = conn.cursor()
+
+# Insert into SQL table
+for index, row in df.iterrows():
+    cursor.execute("""
+        INSERT INTO Results (Name, Time, School)
+        VALUES (?, ?, ?)
+    """, row['Name'], row['Time'], row['School'])
+
+conn.commit()
+conn.close()
+
+print("Data loaded successfully!")
