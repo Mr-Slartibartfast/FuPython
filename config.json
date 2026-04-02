@@ -1,0 +1,6 @@
+{
+  "source": "input.csv",
+  "drop_columns": ["unnecessary_column"],
+  "filter_column": "value",
+  "output": "cleaned.csv"
+}
